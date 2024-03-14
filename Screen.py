@@ -75,8 +75,13 @@ class Screen:
     def draw_hexagon(self, hex,shadow,width=0):
         if hex.color == WHITE:
             width=3
+
+        if hex.mouseCollision(pygame.mouse.get_pos()):
+            pygame.draw.polygon(self.WIN, (0,0,0),shadow.points)
+            width=0
+
         if hex.color!=WHITE:
-            pygame.draw.polygon(self.WIN, (0,0,0),shadow.points,width)
+            pygame.draw.polygon(self.WIN, (0,0,0),shadow.points)
         pygame.draw.polygon(self.WIN, hex.color,hex.points,width)
 
 
