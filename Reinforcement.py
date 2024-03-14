@@ -248,9 +248,9 @@ class Learning:
 
                             self.board[i][j] = 0
 
-                if row==-1 and col==-1:
-                    print("random")
-                    row, col = self.randomIndex()
+                # if row==-1 and col==-1:
+                #     print("random")
+                #     row, col = self.randomIndex()
                 self.board[row][col] = 2
                 self.blueTurn = True
             return (row,col)
