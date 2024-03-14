@@ -161,6 +161,8 @@ class Learning:
                 self.moves += 1
 
             print(self.board)
+            print(self.hash())
+
             # print(self.win)
         return self.winner
 
@@ -174,25 +176,25 @@ class Learning:
             #                                                                                        i) * reward) / (
             #                           self.diction[reversedLst[i]][1] + 1)
             #     self.diction[reversedLst[i]] = (newMark, self.diction[reversedLst[i]][1] + 1)
-            if 1<=i<=5:
+            if 1<=len(reversedLst)-i<=5:
                 if reversedLst[i] not in self.diction_1to5:
                     self.diction_1to5[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_1to5[reversedLst[i]][0]*self.diction_1to5[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_1to5[reversedLst[i]][1]+1)
                     self.diction_1to5[reversedLst[i]]=(newMark,self.diction_1to5[reversedLst[i]][1]+1)
-            elif 6<=i<=10:
+            elif 6<=len(reversedLst)-i<=10:
                 if reversedLst[i] not in self.diction_6to10:
                     self.diction_6to10[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_6to10[reversedLst[i]][0]*self.diction_6to10[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_6to10[reversedLst[i]][1]+1)
                     self.diction_6to10[reversedLst[i]]=(newMark,self.diction_6to10[reversedLst[i]][1]+1)
-            elif 11<=i<=15:
+            elif 11<=len(reversedLst)-i<=15:
                 if reversedLst[i] not in self.diction_11to15:
                     self.diction_11to15[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_11to15[reversedLst[i]][0]*self.diction_11to15[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_11to15[reversedLst[i]][1]+1)
                     self.diction_11to15[reversedLst[i]]=(newMark,self.diction_11to15[reversedLst[i]][1]+1)
-            elif 16<=i<=20:
+            elif 16<=len(reversedLst)-i<=20:
                 if reversedLst[i] not in self.diction_16to20:
                     self.diction_16to20[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
@@ -247,12 +249,14 @@ class Learning:
 
 
                             self.board[i][j] = 0
+                if row==-1 and col==-1:
+                    # print("random")
+                    row, col = self.randomIndex()
 
-                # if row==-1 and col==-1:
-                #     print("random")
-                #     row, col = self.randomIndex()
+
                 self.board[row][col] = 2
                 self.blueTurn = True
+
             return (row,col)
 
 def terminalGame():
@@ -262,7 +266,7 @@ def terminalGame():
 
 def milGames():
     lr = Learning(5)
-    for i in range(1000000):
+    for i in range(10000):
         winner = lr.randomVSrandom()
         if winner=="red":
            lr.grading(1)
@@ -271,6 +275,7 @@ def milGames():
         if i%100000==0:
             print(i)
         lr.newGame()
+
     lr.diction_1to5JSON.dumpDic(lr.diction_1to5)
     lr.diction_6to10JSON.dumpDic(lr.diction_6to10)
     lr.diction_11to15JSON.dumpDic(lr.diction_11to15)
