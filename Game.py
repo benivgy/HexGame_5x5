@@ -31,10 +31,12 @@ class Game(Screen):
             self.ds_blue.union((i, self.boardSize - 1), self.right_node)
 
 
-        #Blue   -> Top and Bottom
-        #Red    -> Right and left
+        self.blueWins = 0
+        self.redWins = 0
+
 
     def newGame(self):
+        #Reset the variables for a new game
         self.blueTurn = True
         self.board = np.zeros((self.boardSize, self.boardSize))
         self.turnsLeft = self.boardSize*self.boardSize
@@ -90,6 +92,8 @@ class Game(Screen):
             else:
                 self.showMessage("Red wins", 140, 500, (0, 0, 0))
 
+        self.displayWins()
+
 
 
     def pressHex(self):
@@ -132,14 +136,21 @@ class Game(Screen):
         if self.ds_blue.find(self.left_node) == self.ds_blue.find(self.right_node):
             self.win=True
             self.blueWin=True
+            self.blueWins+=1
             return True
         return False
 
     def winnerRed(self):
         if self.ds_red.find(self.top_node) == self.ds_red.find(self.bottom_node):
             self.win=True
+            self.redWins+=1
             return True
         return False
+
+
+    def displayWins(self):
+        self.showMessage(f"Blue: {self.blueWins} wins",450,75, BLUE,font="Corbel")
+        self.showMessage(f"Red: {self.redWins} wins",450,140, RED,font="Corbel")
 
     '''Random moves for blue and red'''
     def randomIndex(self): #Returns tuple of the random index

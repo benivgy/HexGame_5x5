@@ -1,6 +1,5 @@
 import math
 
-
 class Hexagon:
     def __init__(self, x, y, radius, color=(255, 255, 255)):
         self.middleX = x
@@ -14,6 +13,7 @@ class Hexagon:
         self.taken = False
 
     def mouseCollision(self, mouse_pos):
+        #Retruns wheres the mouse is on a hexagon
         # Mouse position is a tuple (mouse_x, mouse_y)
         mouse_x, mouse_y = mouse_pos
 

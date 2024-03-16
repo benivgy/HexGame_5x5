@@ -48,6 +48,8 @@ class Learning:
             self.ds_blue.union((i, 0), self.left_node)
             self.ds_blue.union((i, self.boardSize - 1), self.right_node)
     def newGame(self):
+        #Reset the variables for a new game
+
         self.board = np.zeros((self.boardSize, self.boardSize))
         self.matchList = []
         self.blueTurn = True
@@ -223,34 +225,43 @@ class Learning:
                                     maxGrade = self.diction_1to5JSON.dic[stringBoard][0]
                                     row = i
                                     col = j
+                                    print("diction 1")
 
                             elif 6 <= self.moves <= 10:
                                 if stringBoard in self.diction_6to10JSON.dic and self.diction_6to10JSON.dic[stringBoard][0] > maxGrade:
                                     maxGrade = self.diction_6to10JSON.dic[stringBoard][0]
                                     row = i
                                     col = j
+                                    print("diction 2")
+
 
                             elif 11 <= self.moves <= 15:
                                 if stringBoard in self.diction_11to15JSON.dic and self.diction_11to15JSON.dic[stringBoard][0] > maxGrade:
                                     maxGrade = self.diction_11to15JSON.dic[stringBoard][0]
                                     row = i
                                     col = j
+                                    print("diction 3")
+
 
                             elif 16 <= self.moves <= 20:
                                 if stringBoard in self.diction_16to20JSON.dic and self.diction_16to20JSON.dic[stringBoard][0] > maxGrade:
                                     maxGrade = self.diction_16to20JSON.dic[stringBoard][0]
                                     row = i
                                     col = j
+                                    print("diction 4")
+
                             else:
                                 if stringBoard in self.diction_21to25JSON.dic and self.diction_21to25JSON.dic[stringBoard][0] > maxGrade:
                                     maxGrade = self.diction_21to25JSON.dic[stringBoard][0]
                                     row = i
                                     col = j
+                                    print("diction 5")
+
 
 
                             self.board[i][j] = 0
                 if row==-1 and col==-1:
-                    # print("random")
+                    print("random")
                     row, col = self.randomIndex()
 
 
@@ -266,13 +277,13 @@ def terminalGame():
 
 def milGames():
     lr = Learning(5)
-    for i in range(10000):
+    for i in range(3000000):
         winner = lr.randomVSrandom()
         if winner=="red":
            lr.grading(1)
         else:
             lr.grading(-1)
-        if i%100000==0:
+        if i%10000==0:
             print(i)
         lr.newGame()
 

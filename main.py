@@ -49,7 +49,7 @@ def main():
 
 
 if __name__ == "__main__":
-    # pygame.display.set_caption('Escape Racer ---- Pursuit Prodigy')
+    pygame.display.set_caption('HEX --- Created by Yogev Ben Ivgy')
     # pygame.display.set_icon(pygame.image.load('images/icon.jpeg'))
     main()
 

@@ -15,5 +15,6 @@ class Dict():
         return json_dict
 
     def dumpDic(self,dictionary):
+        #Export the given dictionary (overwrite)
         with open(self.path, 'w')as json_file:
             json.dump(dictionary, json_file)

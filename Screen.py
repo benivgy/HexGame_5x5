@@ -73,6 +73,7 @@ class Screen:
                 self.buttons[i][j]=(Button.Button_hex(300+25*j+25*2*i,212+44*j,25))
 
     def draw_hexagon(self, hex,shadow,width=0):
+        #Draw the given hexagon
         if hex.color == WHITE:
             width=3
 
@@ -131,27 +132,12 @@ class Screen:
         self.WIN.blit(pic.pic, pic.rect)
 
     # Shows a message on the screen
-    def showMessage(self, str, x, y, color,size=72):
-        FONT = pygame.font.SysFont('Corbel', size)
+    def showMessage(self, str, x, y, color, size=72, font="Ariel"):
+        FONT = pygame.font.SysFont(font, size)
         text_surface = FONT.render(str, True, color)
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.WIN.blit(text_surface, text_rect)
-
-
-    #End game manu
-    def gameOver(self,score):
-        self.WIN.fill(GRAY)
-        self.showMessage("GAME OVER - You lost", self.RES[0] / 2, self.RES[1] / 10 * 8+5, BLACK, 50)
-        self.showMessage("GAME OVER - You lost", self.RES[0] / 2, self.RES[1] / 10 * 8, WHITE, 50)
-        self.showMessage(f"SCORE: {score}", self.RES[0] / 2 , self.RES[1] / 10+7, BLACK, 100)
-        self.showMessage(f"SCORE: {score}", self.RES[0] / 2, self.RES[1] / 10, RED, 100)
-
-        exitBtn = Button.Button(150,150)
-        self.WIN.blit(self.closeGame,(150,150))
-        if exitBtn.buttonPress(self.WIN):
-            return False
-        return True
 
 
 

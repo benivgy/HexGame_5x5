@@ -65,6 +65,7 @@ class Button_rect():
         return coll
 
     def showButton(self,picture,rect,surface):
+        #Show where the button is located - used for monitoring
         rect.center=self.rect.center
         surface.blit(picture, rect)
 
