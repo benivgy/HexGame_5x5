@@ -10,22 +10,32 @@ class Learning:
         self.matchList = []
         self.blueTurn = True
 
+
+
+
         self.diction_1to5 = {}
         self.diction_1to5JSON = Dictionary.Dict("dictionaries/diction1-5.json")
 
         self.diction_6to10 = {}
         self.diction_6to10JSON = Dictionary.Dict("dictionaries/diction6-10.json")
 
+
         self.diction_11to15 = {}
         self.diction_11to15JSON = Dictionary.Dict("dictionaries/diction11-15.json")
+
 
         self.diction_16to20 = {}
         self.diction_16to20JSON = Dictionary.Dict("dictionaries/diction16-20.json")
 
+
         self.diction_21to25 = {}
         self.diction_21to25JSON = Dictionary.Dict("dictionaries/diction21-25.json")
 
-
+        self.diction_1to5 = self.diction_1to5JSON.dic
+        self.diction_6to10 = self.diction_6to10JSON.dic
+        self.diction_11to15 = self.diction_11to15JSON.dic
+        self.diction_16to20 = self.diction_16to20JSON.dic
+        self.diction_21to25 = self.diction_21to25JSON.dic
 
         self.turnsLeft = boardSize*boardSize
         self.moves=1
@@ -141,10 +151,37 @@ class Learning:
             else:
                 self.randomRed(self.randomIndex())
             self.matchList.append(self.hash())
-            # print(self.board)
-            # print(self.win)
         return self.winner
 
+    def smart70VSrandom(self):
+        while not self.win:
+            if self.blueTurn:
+                self.randomBlue(self.randomIndex())
+            else:
+                smartORrandom = random.random()
+                if smartORrandom <=0.3:
+                    self.randomRed(self.randomIndex())
+                else:
+                    i, j = self.smartMove()
+                    self.board[i][j] = 2
+                    self.blueTurn = True
+                    self.checkWinner(i, j, "red")
+                    self.moves += 1
+            self.matchList.append(self.hash())
+        return self.winner
+
+    def smart_playerVSrandom(self):
+        while not self.win:
+            if self.blueTurn:
+                self.randomBlue(self.randomIndex())
+            else:
+                i, j = self.smartMove()
+                self.board[i][j] = 2
+                self.blueTurn = True
+                self.checkWinner(i, j, "red")
+                self.moves += 1
+
+        return self.winner
     def humanVSsmart_player(self):
         while not self.win:
             if self.blueTurn:
@@ -162,8 +199,8 @@ class Learning:
                 self.checkWinner(i, j, "red")
                 self.moves += 1
 
+            self.matchList.append(self.hash())
             print(self.board)
-            print(self.hash())
 
             # print(self.win)
         return self.winner
@@ -171,43 +208,41 @@ class Learning:
     def grading(self,reward):
         reversedLst = self.matchList[::-1]
         for i in range(len(reversedLst)):
-            # if reversedLst[i] not in self.diction:
-            #     self.diction[reversedLst[i]] = (pow(self.gama, i) * reward, 1)
-            # else:
-            #     newMark = (self.diction[reversedLst[i]][0] * self.diction[reversedLst[i]][1] + pow(self.gama,
-            #                                                                                        i) * reward) / (
-            #                           self.diction[reversedLst[i]][1] + 1)
-            #     self.diction[reversedLst[i]] = (newMark, self.diction[reversedLst[i]][1] + 1)
             if 1<=len(reversedLst)-i<=5:
                 if reversedLst[i] not in self.diction_1to5:
                     self.diction_1to5[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_1to5[reversedLst[i]][0]*self.diction_1to5[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_1to5[reversedLst[i]][1]+1)
-                    self.diction_1to5[reversedLst[i]]=(newMark,self.diction_1to5[reversedLst[i]][1]+1)
+                    if newMark>=0.2 or newMark<=-0.2:
+                        self.diction_1to5[reversedLst[i]]=(newMark,self.diction_1to5[reversedLst[i]][1]+1)
             elif 6<=len(reversedLst)-i<=10:
                 if reversedLst[i] not in self.diction_6to10:
                     self.diction_6to10[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_6to10[reversedLst[i]][0]*self.diction_6to10[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_6to10[reversedLst[i]][1]+1)
-                    self.diction_6to10[reversedLst[i]]=(newMark,self.diction_6to10[reversedLst[i]][1]+1)
+                    if newMark>=0.2 or newMark<=-0.2:
+                        self.diction_6to10[reversedLst[i]]=(newMark,self.diction_6to10[reversedLst[i]][1]+1)
             elif 11<=len(reversedLst)-i<=15:
                 if reversedLst[i] not in self.diction_11to15:
                     self.diction_11to15[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_11to15[reversedLst[i]][0]*self.diction_11to15[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_11to15[reversedLst[i]][1]+1)
-                    self.diction_11to15[reversedLst[i]]=(newMark,self.diction_11to15[reversedLst[i]][1]+1)
+                    if newMark>=0.2 or newMark<=-0.2:
+                        self.diction_11to15[reversedLst[i]]=(newMark,self.diction_11to15[reversedLst[i]][1]+1)
             elif 16<=len(reversedLst)-i<=20:
                 if reversedLst[i] not in self.diction_16to20:
                     self.diction_16to20[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_16to20[reversedLst[i]][0]*self.diction_16to20[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_16to20[reversedLst[i]][1]+1)
-                    self.diction_16to20[reversedLst[i]]=(newMark,self.diction_16to20[reversedLst[i]][1]+1)
+                    if newMark>=0.2 or newMark<=-0.2:
+                        self.diction_16to20[reversedLst[i]]=(newMark,self.diction_16to20[reversedLst[i]][1]+1)
             else:
                 if reversedLst[i] not in self.diction_21to25:
                     self.diction_21to25[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_21to25[reversedLst[i]][0]*self.diction_21to25[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_21to25[reversedLst[i]][1]+1)
-                    self.diction_21to25[reversedLst[i]]=(newMark,self.diction_21to25[reversedLst[i]][1]+1)
+                    if newMark>=0.2 or newMark<=-0.2:
+                        self.diction_21to25[reversedLst[i]]=(newMark,self.diction_21to25[reversedLst[i]][1]+1)
 
     def smartMove(self):
             row = -1
@@ -225,14 +260,14 @@ class Learning:
                                     maxGrade = self.diction_1to5JSON.dic[stringBoard][0]
                                     row = i
                                     col = j
-                                    print("diction 1")
+                                    # print("diction 1")
 
                             elif 6 <= self.moves <= 10:
                                 if stringBoard in self.diction_6to10JSON.dic and self.diction_6to10JSON.dic[stringBoard][0] > maxGrade:
                                     maxGrade = self.diction_6to10JSON.dic[stringBoard][0]
                                     row = i
                                     col = j
-                                    print("diction 2")
+                                    # print("diction 2")
 
 
                             elif 11 <= self.moves <= 15:
@@ -240,7 +275,7 @@ class Learning:
                                     maxGrade = self.diction_11to15JSON.dic[stringBoard][0]
                                     row = i
                                     col = j
-                                    print("diction 3")
+                                    # print("diction 3")
 
 
                             elif 16 <= self.moves <= 20:
@@ -248,20 +283,20 @@ class Learning:
                                     maxGrade = self.diction_16to20JSON.dic[stringBoard][0]
                                     row = i
                                     col = j
-                                    print("diction 4")
+                                    # print("diction 4")
 
                             else:
                                 if stringBoard in self.diction_21to25JSON.dic and self.diction_21to25JSON.dic[stringBoard][0] > maxGrade:
                                     maxGrade = self.diction_21to25JSON.dic[stringBoard][0]
                                     row = i
                                     col = j
-                                    print("diction 5")
+                                    # print("diction 5")
 
 
 
                             self.board[i][j] = 0
                 if row==-1 and col==-1:
-                    print("random")
+                    # print("random")
                     row, col = self.randomIndex()
 
 
@@ -272,12 +307,88 @@ class Learning:
 
 def terminalGame():
     lr = Learning(5)
-    print(lr.humanVSsmart_player())
-    lr.newGame()
+    for i in range(5):
+        winner = lr.humanVSsmart_player()
+        if winner == "red":
+            lr.grading(1)
+        else:
+            lr.grading(-1)
 
-def milGames():
+        lr.newGame()
+
+        lr.diction_1to5JSON.dumpDic(lr.diction_1to5)
+        lr.diction_6to10JSON.dumpDic(lr.diction_6to10)
+        lr.diction_11to15JSON.dumpDic(lr.diction_11to15)
+        lr.diction_16to20JSON.dumpDic(lr.diction_16to20)
+        lr.diction_21to25JSON.dumpDic(lr.diction_21to25)
+
+def cleanDic():
+    lr=Learning(5)
+    lr.diction_1to5={key: value for key, value in lr.diction_1to5.items() if not (-0.2 <= value[0] <= 0.2)}
+    lr.diction_6to10={key: value for key, value in lr.diction_6to10.items() if not (-0.2 <= value[0] <= 0.2)}
+    lr.diction_11to15={key: value for key, value in lr.diction_11to15.items() if not (-0.2 <= value[0] <= 0.2)}
+    lr.diction_16to20={key: value for key, value in lr.diction_16to20.items() if not (-0.2 <= value[0] <= 0.2)}
+    lr.diction_21to25={key: value for key, value in lr.diction_21to25.items() if not (-0.2 <= value[0] <= 0.2)}
+
+
+    lr.diction_1to5JSON.dumpDic(lr.diction_1to5)
+    lr.diction_6to10JSON.dumpDic(lr.diction_6to10)
+    lr.diction_11to15JSON.dumpDic(lr.diction_11to15)
+    lr.diction_16to20JSON.dumpDic(lr.diction_16to20)
+    lr.diction_21to25JSON.dumpDic(lr.diction_21to25)
+def statistics():
+    lr=Learning(5)
+    #Print the number of boards for each dictionary -> overall 43,455,945 boards out of 3^25 possible (8.47*10^11)
+    x=len(lr.diction_1to5JSON.dic.values())+len(lr.diction_6to10JSON.dic.values())+len(lr.diction_16to20JSON.dic.values())+len(lr.diction_11to15JSON.dic.values())+len(lr.diction_21to25JSON.dic.values())
+    print(len(lr.diction_1to5JSON.dic.values()))
+    print(len(lr.diction_6to10JSON.dic.values()))
+    print(len(lr.diction_11to15JSON.dic.values()))
+    print(len(lr.diction_16to20JSON.dic.values()))
+    print(len(lr.diction_21to25JSON.dic.values()))
+    print(x)
+
+def train_70_30(gamesNumber):
+    lr=Learning(5)
+    gamesNumber = int(gamesNumber)
+    print("___________________")
+    for i in range(gamesNumber):
+        winner = lr.smart70VSrandom()
+        if winner=="red":
+           lr.grading(1)
+        else:
+            lr.grading(-1)
+        if i%10000==0:
+            print(i)
+        lr.newGame()
+
+    lr.diction_1to5JSON.dumpDic(lr.diction_1to5)
+    lr.diction_6to10JSON.dumpDic(lr.diction_6to10)
+    lr.diction_11to15JSON.dumpDic(lr.diction_11to15)
+    lr.diction_16to20JSON.dumpDic(lr.diction_16to20)
+    lr.diction_21to25JSON.dumpDic(lr.diction_21to25)
+
+def checkWinningRate(gamesNumber):
+    redWins = 0
+    blueWins =0
     lr = Learning(5)
-    for i in range(3000000):
+    gamesNumber = int(gamesNumber)
+    for i in range(gamesNumber):
+        winner = lr.smart_playerVSrandom()
+        # print(winner)
+        if winner=="red":
+            redWins+=1
+        else:
+            blueWins+=1
+        lr.newGame()
+
+    print(f"Blue wins: {blueWins}-->{blueWins/(blueWins+redWins)*100}%\nRed wins: {redWins} -->{redWins/(blueWins+redWins)*100}%")
+
+
+
+def train(gamesNumber):
+    lr = Learning(5)
+    gamesNumber=int(gamesNumber)
+    for i in range(gamesNumber):
         winner = lr.randomVSrandom()
         if winner=="red":
            lr.grading(1)
@@ -296,6 +407,40 @@ def milGames():
     # lr.dictionJSON.dumpDic(lr.diction)
 
 if __name__=="__main__":
-    # milGames()
-    while True:
-        terminalGame()
+    print("Welcome to the reinforcement learning section of the project")
+    print("Chose an option:")
+    print("1 - play 3 million games")
+    print("2 - play against a smart player")
+    print("3 - clean the dictionary (removes all the values between -0.2 to 0.2)")
+    print("4 - show information")
+    print("5 - 70-30")
+    print("6 - check winning rate")
+
+    mode = input()
+    while int(mode) not in [1,2,3,4,5,6]:
+        mode=input("Invalid input, try again")
+
+    mode=int(mode)
+    print("*** Wait a few moments for the dictionaries to load")
+
+    if mode==1:
+        print("playing 3 million games...")
+        train(input("Enter number of games to play: "))
+    elif mode==2:
+        print("playing against a smart player...")
+        while True:
+            terminalGame()
+    elif mode==3:
+        print("Cleaning dic...")
+        cleanDic()
+    elif mode ==4:
+        print("Showing statistics...")
+        statistics()
+    elif mode == 5:
+        print("Plating 70-30...")
+        games_to_play=input("Enter number of games: ")
+        train_70_30(games_to_play)
+    elif mode==6:
+        print("Playing smart games")
+        games_to_play=input("Enter number of games: ")
+        checkWinningRate(games_to_play)
