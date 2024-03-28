@@ -210,35 +210,40 @@ class Learning:
         for i in range(len(reversedLst)):
             if 1<=len(reversedLst)-i<=5:
                 if reversedLst[i] not in self.diction_1to5:
-                    self.diction_1to5[reversedLst[i]]=(pow(self.gama,i)*reward,1)
+                    if not -0.2<=(pow(self.gama,i)*reward)<=0.2:
+                        self.diction_1to5[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_1to5[reversedLst[i]][0]*self.diction_1to5[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_1to5[reversedLst[i]][1]+1)
                     if newMark>=0.2 or newMark<=-0.2:
                         self.diction_1to5[reversedLst[i]]=(newMark,self.diction_1to5[reversedLst[i]][1]+1)
             elif 6<=len(reversedLst)-i<=10:
                 if reversedLst[i] not in self.diction_6to10:
-                    self.diction_6to10[reversedLst[i]]=(pow(self.gama,i)*reward,1)
+                    if not -0.2<=(pow(self.gama,i)*reward)<=0.2:
+                        self.diction_6to10[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_6to10[reversedLst[i]][0]*self.diction_6to10[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_6to10[reversedLst[i]][1]+1)
                     if newMark>=0.2 or newMark<=-0.2:
                         self.diction_6to10[reversedLst[i]]=(newMark,self.diction_6to10[reversedLst[i]][1]+1)
             elif 11<=len(reversedLst)-i<=15:
                 if reversedLst[i] not in self.diction_11to15:
-                    self.diction_11to15[reversedLst[i]]=(pow(self.gama,i)*reward,1)
+                    if not -0.2<=(pow(self.gama,i)*reward)<=0.2:
+                        self.diction_11to15[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_11to15[reversedLst[i]][0]*self.diction_11to15[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_11to15[reversedLst[i]][1]+1)
                     if newMark>=0.2 or newMark<=-0.2:
                         self.diction_11to15[reversedLst[i]]=(newMark,self.diction_11to15[reversedLst[i]][1]+1)
             elif 16<=len(reversedLst)-i<=20:
                 if reversedLst[i] not in self.diction_16to20:
-                    self.diction_16to20[reversedLst[i]]=(pow(self.gama,i)*reward,1)
+                    if not -0.2<=(pow(self.gama,i)*reward)<=0.2:
+                        self.diction_16to20[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_16to20[reversedLst[i]][0]*self.diction_16to20[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_16to20[reversedLst[i]][1]+1)
                     if newMark>=0.2 or newMark<=-0.2:
                         self.diction_16to20[reversedLst[i]]=(newMark,self.diction_16to20[reversedLst[i]][1]+1)
             else:
                 if reversedLst[i] not in self.diction_21to25:
-                    self.diction_21to25[reversedLst[i]]=(pow(self.gama,i)*reward,1)
+                    if not -0.2<=(pow(self.gama,i)*reward)<=0.2:
+                        self.diction_21to25[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_21to25[reversedLst[i]][0]*self.diction_21to25[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_21to25[reversedLst[i]][1]+1)
                     if newMark>=0.2 or newMark<=-0.2:
@@ -406,6 +411,21 @@ def train(gamesNumber):
 
     # lr.dictionJSON.dumpDic(lr.diction)
 
+def erase():
+    lr = Learning(5)
+
+    lr.diction_1to5 = {}
+    lr.diction_6to10 = {}
+    lr.diction_11to15 = {}
+    lr.diction_16to20 = {}
+    lr.diction_21to25 = {}
+
+    lr.diction_1to5JSON.dumpDic(lr.diction_1to5)
+    lr.diction_6to10JSON.dumpDic(lr.diction_6to10)
+    lr.diction_11to15JSON.dumpDic(lr.diction_11to15)
+    lr.diction_16to20JSON.dumpDic(lr.diction_16to20)
+    lr.diction_21to25JSON.dumpDic(lr.diction_21to25)
+
 if __name__=="__main__":
     print("Welcome to the reinforcement learning section of the project")
     print("Chose an option:")
@@ -415,9 +435,10 @@ if __name__=="__main__":
     print("4 - show information")
     print("5 - 70-30")
     print("6 - check winning rate")
+    print("7 - Erase dictionaries")
 
     mode = input()
-    while int(mode) not in [1,2,3,4,5,6]:
+    while int(mode) not in [1,2,3,4,5,6,7]:
         mode=input("Invalid input, try again")
 
     mode=int(mode)
@@ -444,3 +465,6 @@ if __name__=="__main__":
         print("Playing smart games")
         games_to_play=input("Enter number of games: ")
         checkWinningRate(games_to_play)
+    elif mode==7:
+        print("Erasing dictionaries...")
+        erase()
