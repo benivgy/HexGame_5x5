@@ -310,7 +310,7 @@ class Learning:
 
             return (row,col)
 
-def terminalGame():
+def terminalGame(lr):
     lr = Learning(5)
     for i in range(5):
         winner = lr.humanVSsmart_player()
@@ -327,8 +327,7 @@ def terminalGame():
         lr.diction_16to20JSON.dumpDic(lr.diction_16to20)
         lr.diction_21to25JSON.dumpDic(lr.diction_21to25)
 
-def cleanDic():
-    lr=Learning(5)
+def cleanDic(lr):
     lr.diction_1to5={key: value for key, value in lr.diction_1to5.items() if not (-0.2 <= value[0] <= 0.2)}
     lr.diction_6to10={key: value for key, value in lr.diction_6to10.items() if not (-0.2 <= value[0] <= 0.2)}
     lr.diction_11to15={key: value for key, value in lr.diction_11to15.items() if not (-0.2 <= value[0] <= 0.2)}
@@ -341,8 +340,7 @@ def cleanDic():
     lr.diction_11to15JSON.dumpDic(lr.diction_11to15)
     lr.diction_16to20JSON.dumpDic(lr.diction_16to20)
     lr.diction_21to25JSON.dumpDic(lr.diction_21to25)
-def statistics():
-    lr=Learning(5)
+def statistics(lr):
     #Print the number of boards for each dictionary -> overall 43,455,945 boards out of 3^25 possible (8.47*10^11)
     x=len(lr.diction_1to5JSON.dic.values())+len(lr.diction_6to10JSON.dic.values())+len(lr.diction_16to20JSON.dic.values())+len(lr.diction_11to15JSON.dic.values())+len(lr.diction_21to25JSON.dic.values())
     print(len(lr.diction_1to5JSON.dic.values()))
@@ -352,8 +350,7 @@ def statistics():
     print(len(lr.diction_21to25JSON.dic.values()))
     print(x)
 
-def train_70_30(gamesNumber):
-    lr=Learning(5)
+def train_70_30(gamesNumber,lr):
     gamesNumber = int(gamesNumber)
     print("___________________")
     for i in range(gamesNumber):
@@ -372,10 +369,9 @@ def train_70_30(gamesNumber):
     lr.diction_16to20JSON.dumpDic(lr.diction_16to20)
     lr.diction_21to25JSON.dumpDic(lr.diction_21to25)
 
-def checkWinningRate(gamesNumber):
+def checkWinningRate(gamesNumber,lr):
     redWins = 0
     blueWins =0
-    lr = Learning(5)
     gamesNumber = int(gamesNumber)
     for i in range(gamesNumber):
         winner = lr.smart_playerVSrandom()
@@ -384,14 +380,15 @@ def checkWinningRate(gamesNumber):
             redWins+=1
         else:
             blueWins+=1
+        if i%10000==0:
+            print(i)
         lr.newGame()
 
     print(f"Blue wins: {blueWins}-->{blueWins/(blueWins+redWins)*100}%\nRed wins: {redWins} -->{redWins/(blueWins+redWins)*100}%")
 
 
 
-def train(gamesNumber):
-    lr = Learning(5)
+def train(gamesNumber,lr):
     gamesNumber=int(gamesNumber)
     for i in range(gamesNumber):
         winner = lr.randomVSrandom()
@@ -411,8 +408,7 @@ def train(gamesNumber):
 
     # lr.dictionJSON.dumpDic(lr.diction)
 
-def erase():
-    lr = Learning(5)
+def erase(lr):
 
     lr.diction_1to5 = {}
     lr.diction_6to10 = {}
@@ -427,44 +423,46 @@ def erase():
     lr.diction_21to25JSON.dumpDic(lr.diction_21to25)
 
 if __name__=="__main__":
-    print("Welcome to the reinforcement learning section of the project")
-    print("Chose an option:")
-    print("1 - play 3 million games")
-    print("2 - play against a smart player")
-    print("3 - clean the dictionary (removes all the values between -0.2 to 0.2)")
-    print("4 - show information")
-    print("5 - 70-30")
-    print("6 - check winning rate")
-    print("7 - Erase dictionaries")
+    lr = Learning(5)
+    while True:
+        print("Welcome to the reinforcement learning section of the project")
+        print("Chose an option:")
+        print("1 - play 3 million games")
+        print("2 - play against a smart player")
+        print("3 - clean the dictionary (removes all the values between -0.2 to 0.2)")
+        print("4 - show information")
+        print("5 - 70-30")
+        print("6 - check winning rate")
+        print("7 - Erase dictionaries")
 
-    mode = input()
-    while int(mode) not in [1,2,3,4,5,6,7]:
-        mode=input("Invalid input, try again")
+        mode = input()
+        while int(mode) not in [1,2,3,4,5,6,7]:
+            mode=input("Invalid input, try again")
 
-    mode=int(mode)
-    print("*** Wait a few moments for the dictionaries to load")
+        mode=int(mode)
+        print("*** Wait a few moments for the dictionaries to load")
 
-    if mode==1:
-        print("playing 3 million games...")
-        train(input("Enter number of games to play: "))
-    elif mode==2:
-        print("playing against a smart player...")
-        while True:
-            terminalGame()
-    elif mode==3:
-        print("Cleaning dic...")
-        cleanDic()
-    elif mode ==4:
-        print("Showing statistics...")
-        statistics()
-    elif mode == 5:
-        print("Plating 70-30...")
-        games_to_play=input("Enter number of games: ")
-        train_70_30(games_to_play)
-    elif mode==6:
-        print("Playing smart games")
-        games_to_play=input("Enter number of games: ")
-        checkWinningRate(games_to_play)
-    elif mode==7:
-        print("Erasing dictionaries...")
-        erase()
+        if mode==1:
+            print("playing 3 million games...")
+            train(input("Enter number of games to play: "),lr)
+        elif mode==2:
+            print("playing against a smart player...")
+            while True:
+                terminalGame(lr)
+        elif mode==3:
+            print("Cleaning dic...")
+            cleanDic(lr)
+        elif mode ==4:
+            print("Showing statistics...")
+            statistics(lr)
+        elif mode == 5:
+            print("Plating 70-30...")
+            games_to_play=input("Enter number of games: ")
+            train_70_30(games_to_play,lr)
+        elif mode==6:
+            print("Playing smart games")
+            games_to_play=input("Enter number of games: ")
+            checkWinningRate(games_to_play,lr)
+        elif mode==7:
+            print("Erasing dictionaries...")
+            erase(lr)
