@@ -43,11 +43,11 @@ class Screen:
         ''' Menu '''
         self.showMenu = True
         self.optionsPage=False
+        self.aboutPage = False
         self.menu_surface = pygame.Surface(self.RES, pygame.SRCALPHA)
         self.menu_surface.fill((35, 85, 75))
 
         #Pictures for the buttons
-
         self.play1Pic = pygame.transform.scale((pygame.image.load('images/PLAY1.png')), (200,50))
         self.play2Pic = pygame.transform.scale((pygame.image.load('images/PLAY2.png')), (200,50))
         self.quit1Pic = pygame.transform.scale((pygame.image.load('images/QUIT1.png')), (200,50))
@@ -65,16 +65,37 @@ class Screen:
         self.about1Pic = pygame.transform.scale((pygame.image.load('images/ABOUT1.png')), (200, 50))
         self.about2Pic = pygame.transform.scale((pygame.image.load('images/ABOUT2.png')), (200, 50))
 
-
-
-
-
-
-
-
-
+        #used for navigation
         self.up_arrow_pressed = False
         self.down_arrow_pressed = False
+        self.escape_pressed = False
+        self.enter_pressed = False
+
+        #about page text
+        self.startingX = 450
+        self.startingY = 80
+
+        self.about1 = "Welcome to Hex Haven, where strategic mastery and tactical wit collide in a mesmerizing game of wits!"
+        self.about2 = "In this game, players embark on a journey to connect their sides of the hexagonal board,"
+        self.about3="forming an unbroken path from one side to the other."
+        self.about4 = "Are you ready to outmaneuver your opponent and claim victory?"
+        self.about5 = "The objective of Hex Haven is simple: be the first to connect your two opposite"
+        self.about6 ="sides of the hexagonal board with an unbroken chain of your colored hexes."
+        self.about7="Players take turns placing their hexes strategically,"
+        self.about8 = "attempting to thwart their opponent's progress while advancing their own."
+        self.about9 = "Setup:"
+        self.about10 = "1) Place the hexagonal game board between the two players."
+        self.about11 = "2) Each player selects a color and takes turns placing their hexes on the board,"
+        self.about12 = "one at a time, until all hexes are placed."
+        self.about13 = "Gameplay:"
+        self.about14="1) Players take turns placing one of their colored hexes on any empty space on the board."
+        self.about15 = "2) Hexes cannot be moved once placed, so choose your placement wisely!"
+        self.about16 = "3) The game continues until one player successfully"
+        self.about17 = "connects their two sides with an unbroken chain of their colored hexes."
+        self.about18 = "Winning:"
+        self.about19 = "The player who successfully connects their two sides first wins the game!"
+        self.about20 = "Whether through careful planning or clever blocking,"
+        self.about21 ="victory in Hex Haven requires strategic thinking and anticipation of your opponent's moves."
 
         self.hexagons= [[0 for j in range(self.boardSize)] for i in range(self.boardSize)]
         for i in range(self.boardSize):
@@ -113,7 +134,7 @@ class Screen:
     def menu(self,keys):
         pressedKey = self.check_arrow_keys(keys)
         self.WIN.blit((self.menu_surface), (0, 0))
-        if not self.optionsPage:
+        if not self.optionsPage and not self.aboutPage:
             self.showMessage("Welcome to HEX" , self.RES[0] / 2, self.RES[1] / 10 * 8 + 5, BLACK, 50)
             self.showMessage("Welcome to HEX" , self.RES[0] / 2, self.RES[1] / 10 * 8, WHITE, 50)
 
@@ -153,14 +174,131 @@ class Screen:
                     return "quit"
                 elif self.menuOption=="play":
                     self.optionsPage=True
+                elif self.menuOption=="about":
+                    self.aboutPage=True
 
-        else:
+        elif self.optionsPage:
             return self.gameOptions(pressedKey)
+        elif self.aboutPage:
+            self.aboutText(pressedKey,self.startingX,self.startingY)
 
             # return self.menuOption
         return "menu"
 
+    def aboutText(self, pressedKey,x,y):
+        if pressedKey == "down":
+            if  -100<=self.startingY<= 80:
+                self.startingY-=20
+        elif pressedKey == "up":
+            if -120 <= self.startingY <= 60:
+                self.startingY+=20
 
+
+        y=self.startingY
+
+        self.showMessage("HEX", self.startingX+3, self.startingY +5, GRAY, 200)
+        self.showMessage("HEX", self.startingX, self.startingY, BLACK, 200)
+
+        y+=70
+
+        self.showMessage(self.about1, self.startingX,y+ 3, BLACK, 25)
+        self.showMessage(self.about1, self.startingX,y, WHITE, 25)
+
+        y+=20
+
+        self.showMessage(self.about2, x, y + 3, BLACK, 25)
+        self.showMessage(self.about2, x, y, WHITE, 25)
+
+        y+=20
+
+        self.showMessage(self.about3, x, y + 3, BLACK, 25)
+        self.showMessage(self.about3, x, y, WHITE, 25)
+
+        y+=20
+
+        self.showMessage(self.about4, x, y + 3, BLACK, 25)
+        self.showMessage(self.about4, x, y, WHITE, 25)
+
+        y += 40
+
+        self.showMessage(self.about5, x, y + 3, BLACK, 25)
+        self.showMessage(self.about5, x, y, WHITE, 25)
+
+        y += 20
+
+        self.showMessage(self.about6, x, y + 3, BLACK, 25)
+        self.showMessage(self.about6, x, y, WHITE, 25)
+
+        y += 20
+
+        self.showMessage(self.about7, x, y + 3, BLACK, 25)
+        self.showMessage(self.about7, x, y, WHITE, 25)
+
+        y += 20
+
+        self.showMessage(self.about8, x, y + 3, BLACK, 25)
+        self.showMessage(self.about8, x, y, WHITE, 25)
+
+        y += 50
+
+        self.showMessage(self.about9, x, y + 3, BLACK, 45)
+        self.showMessage(self.about9, x, y, WHITE, 45)
+
+        y += 50
+
+        self.showMessage(self.about10, x, y, WHITE, 30)
+
+        y += 30
+
+        self.showMessage(self.about11, x, y, WHITE, 30)
+
+        y += 20
+
+        self.showMessage(self.about12, x, y, WHITE, 30)
+
+        y += 50
+
+        self.showMessage(self.about13, x, y + 3, BLACK, 45)
+        self.showMessage(self.about13, x, y, WHITE, 45)
+
+        y += 50
+
+        self.showMessage(self.about14, x, y, WHITE, 30)
+
+        y += 30
+
+        self.showMessage(self.about15, x, y, WHITE, 30)
+
+        y += 30
+
+        self.showMessage(self.about16, x, y, WHITE, 30)
+
+        y += 20
+
+        self.showMessage(self.about17, x, y, WHITE, 30)
+
+        y += 50
+
+        self.showMessage(self.about18, x, y + 3, BLACK, 45)
+        self.showMessage(self.about18, x, y, WHITE, 45)
+
+        y += 50
+
+        self.showMessage(self.about19, x, y, WHITE, 30)
+
+        y += 20
+
+        self.showMessage(self.about20, x, y, WHITE, 30)
+
+        y += 20
+
+        self.showMessage(self.about21, x, y, WHITE, 30)
+
+
+
+
+        if pressedKey=="escape":
+            self.aboutPage=False
     def gameOptions(self,pressedKey):
         if self.settingSelection == "1v1":
             if pressedKey == "up":
@@ -215,7 +353,7 @@ class Screen:
         self.hard(350,400)
         self.back(350,500)
 
-        print(self.settingSelection, self.gameMode)
+        # print(self.settingSelection, self.gameMode)
 
 
 
@@ -241,6 +379,13 @@ class Screen:
             return "enter"  # Return "enter" if enter key is pressed for the first time
         elif not keys[pygame.K_RETURN]:
             self.enter_pressed = False
+
+        # Check for escape key
+        if keys[pygame.K_ESCAPE] and not self.escape_pressed:
+            self.escape_pressed = True
+            return "escape"  # Return "enter" if enter key is pressed for the first time
+        elif not keys[pygame.K_ESCAPE]:
+            self.escape_pressed = False
 
         return None  # Return None if neither arrow key is pressed or if they are held down
 
@@ -306,6 +451,5 @@ class Screen:
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.WIN.blit(text_surface, text_rect)
-
 
 

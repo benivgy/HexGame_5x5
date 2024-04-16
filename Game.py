@@ -9,6 +9,7 @@ import Group
 import Dictionary
 BLUE = (0,0,255)
 RED = (200,0,0)
+BLACK = (0,0,0)
 
 class Game(Screen):
     def __init__(self):
@@ -106,25 +107,24 @@ class Game(Screen):
         keys = pygame.key.get_pressed()
         if self.showMenu:
             self.gameMode=self.menu(keys)
-            # print(self.gameMode)
             if self.gameMode=="quit":
                 self.showMenu=False
                 return "quit"
-            elif self.gameMode in ["1v1","random","dictionary"] :#and not self.optionsPage:
+            elif self.gameMode in ["1v1","random","dictionary"]:
                 self.showMenu=False
         else:
             self.draw() #Create the game enviorment
                 #Random game
             if self.gameMode=="random":
-
                 self.showMessage("Easy mode", 140, 550, (0, 0, 0), 50)
                 if not self.win:
                     if self.blueTurn:
-                        self.showMessage("Blue turn", 140, 500, (0, 0, 0))
+                        self.showMessage("Blue turn", 140, 500, BLUE)
+                        self.showMessage("Blue turn", 140, 503, BLACK)
                         self.pressHex()
 
-                    if not self.blueTurn:
-                        self.showMessage("Red turn", 140, 500, (0, 0, 0))
+
+                    if not self.blueTurn and self.moves<=25:
                         self.randomRed(self.randomIndex())
 
 
@@ -135,28 +135,37 @@ class Game(Screen):
                 if not self.win:
                     self.pressHex()
                     if self.blueTurn:
-                        self.showMessage("Blue turn", 140, 500, (0, 0, 0))
+                        self.showMessage("Blue turn", 140, 500, BLUE)
+                        self.showMessage("Blue turn", 140, 503, BLACK)
+
                     if not self.blueTurn:
-                        self.showMessage("Red turn", 140, 500, (0, 0, 0))
+                        self.showMessage("Red turn", 140, 500, RED)
+                        self.showMessage("Red turn", 140, 503, BLACK)
+
 
             if self.gameMode == "dictionary":
                 self.showMessage("Average mode", 140, 550, (0, 0, 0), 50)
+                print(self.moves)
                 if not self.win:
                     if self.blueTurn:
+                        self.showMessage("Blue turn", 140, 500, BLUE)
+                        self.showMessage("Blue turn", 140, 503, BLACK)
                         self.pressHex()
-                        self.showMessage("Blue turn", 140, 500, (0, 0, 0))
-                    if not self.blueTurn and self.moves<25:
-                        self.smartMove()
-                        self.showMessage("Red turn", 140, 500, (0, 0, 0))
+
+                        if not self.blueTurn and self.moves<=25:
+                            self.smartMove()
 
 
             if keys[pygame.K_ESCAPE]:
                 self.showMenu=True
             if self.win:
                 if self.blueWin:
-                    self.showMessage("Blue wins", 140, 500, (0, 0, 0))
+                    self.showMessage("Blue wins", 140, 500, BLUE)
+                    self.showMessage("Blue wins", 140, 503, BLACK)
+
                 else:
-                    self.showMessage("Red wins", 140, 500, (0, 0, 0))
+                    self.showMessage("Red wins", 140, 500, RED)
+                    self.showMessage("Red wins", 140, 503,BLACK)
 
             self.displayWins()
 
@@ -193,9 +202,10 @@ class Game(Screen):
                 else:
                     self.ds_blue.union((nei_i, nei_j), (i, j))
         if player=="blue":
-            print(f'{self.winnerBlue()} ==> Blue')
-        else:
-            print(f'{self.winnerRed()} ==> Red')
+            self.winnerBlue()
+        if player =="red":
+            self.winnerRed()
+
 
 
 
@@ -223,7 +233,7 @@ class Game(Screen):
     def randomIndex(self): #Returns tuple of the random index
         i = random.randint(0, self.boardSize-1)
         j = random.randint(0, self.boardSize-1)
-        while  self.hexagons[i][j].taken and self.moves<25:
+        while  self.hexagons[i][j].taken:
             i = random.randint(0, self.boardSize-1)
             j = random.randint(0, self.boardSize-1)
         return (i,j)
@@ -241,9 +251,9 @@ class Game(Screen):
         self.hexagons[(index[0])][index[1]].color = RED
         self.board[index[1]][index[0]] = 2
         self.blueTurn=True
-
         self.hexagons[index[0]][index[1]].taken = True
         self.checkWinner(index[1],index[0],"red")
+        self.moves+=1
 
 
 
@@ -258,8 +268,7 @@ class Game(Screen):
                     if not self.hexagons[j][i].taken:
                         self.board[i][j] = 2
                         stringBoard = self.hash()
-                        # print(self.board)
-                        # print(self.moves)
+
                         if 1 <= self.moves <= 5:
                             if stringBoard in self.diction_1to5JSON.dic and self.diction_1to5JSON.dic[stringBoard][
                                 0] > maxGrade:
@@ -323,7 +332,7 @@ class Game(Screen):
             self.hexagons[j][i].taken = True
             self.blueTurn = True
             self.checkWinner(i, j, "red")
-        self.moves+=1
+            self.moves+=1
 
 
     def hash(self):
@@ -333,5 +342,4 @@ class Game(Screen):
             if i in ['1', '0', '2']:
                 str1 += i
         return str1
-
 
