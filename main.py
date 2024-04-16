@@ -7,18 +7,12 @@ def main():
     game=Game.Game() #Setting up the screen and the basic enviorment
 
     run = True #This is for the game loop
-    str="start"
-    menu = True #Menu on or off
 
 
     while run:
 
-
         game.clock.tick(game.FPS) #Refresh rate
-
-        if menu:
-            game.menu(str)
-
+        # print(game.gameMode)
         # Goes through a list of all events happening - Event handler
         for event in pygame.event.get():
             # Checks if the user quit the window
@@ -28,20 +22,17 @@ def main():
             if event.type == pygame.KEYDOWN:
                 #Getting out of the menus (end game manu and start manu)
                 if event.key == pygame.K_SPACE:
-                    if menu:
-                        menu=False
                     if game.win:
                         game.newGame()
 
                 #Pause the game
-                if event.key == pygame.K_ESCAPE and not menu:
-                    str="continue"
-                    menu=True
+                # if event.key == pygame.K_ESCAPE:
 
 
-        #Running the game
-        if not menu:
-            game.gameManager()
+
+
+        if game.gameManager()=="quit":
+            run=False
 
         #Update the screen
         pygame.display.flip()

@@ -67,6 +67,9 @@ class Button_rect():
     def showButton(self,picture,rect,surface):
         #Show where the button is located - used for monitoring
         rect.center=self.rect.center
-        surface.blit(picture, rect)
+        surface.blit(picture,rect)
+
+    def mouseCollision(self):
+        return self.rect.collidepoint(pygame.mouse.get_pos())
 
 
