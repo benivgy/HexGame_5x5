@@ -8,13 +8,13 @@ This class is in charge of the game environment
 
 #colors
 YELL0W = (255,232,0)
-RED = (200,0,0)
+RED = (170,0,0)
 RED_dark = (75,0,0)
 GRAY = (45,45,45)
 WHITE = (255,255,255)
-GREEN = (76,208,56)
+GREEN = (76,150,56)
 BLACK = (0,0,0)
-BLUE = (0,0,255)
+BLUE = (0,0,200)
 BLUE_dark = (0,0,75)
 
 
@@ -195,6 +195,8 @@ class Screen:
 
 
         y=self.startingY
+
+        self.showMessage("---Scroll with up and down arrows---", self.startingX, self.startingY-70, BLACK, 20)
 
         self.showMessage("HEX", self.startingX+3, self.startingY +5, GRAY, 200)
         self.showMessage("HEX", self.startingX, self.startingY, BLACK, 200)
@@ -451,5 +453,4 @@ class Screen:
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.WIN.blit(text_surface, text_rect)
-
 

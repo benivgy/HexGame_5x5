@@ -7,8 +7,8 @@ import random
 import Hexagon
 import Group
 import Dictionary
-BLUE = (0,0,255)
-RED = (200,0,0)
+BLUE = (0,0,150)
+RED = (150,0,0)
 BLACK = (0,0,0)
 
 class Game(Screen):
@@ -124,7 +124,7 @@ class Game(Screen):
                         self.pressHex()
 
 
-                    if not self.blueTurn and self.moves<=25:
+                    if not self.blueTurn and not self.win:
                         self.randomRed(self.randomIndex())
 
 
@@ -145,14 +145,13 @@ class Game(Screen):
 
             if self.gameMode == "dictionary":
                 self.showMessage("Average mode", 140, 550, (0, 0, 0), 50)
-                print(self.moves)
                 if not self.win:
                     if self.blueTurn:
                         self.showMessage("Blue turn", 140, 500, BLUE)
                         self.showMessage("Blue turn", 140, 503, BLACK)
                         self.pressHex()
 
-                        if not self.blueTurn and self.moves<=25:
+                        if not self.blueTurn and not self.win:
                             self.smartMove()
 
 
@@ -342,4 +341,3 @@ class Game(Screen):
             if i in ['1', '0', '2']:
                 str1 += i
         return str1
-
