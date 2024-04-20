@@ -8,10 +8,11 @@ def main():
 
     run = True #This is for the game loop
 
+    clock = pygame.time.Clock()
 
     while run:
 
-        game.clock.tick(game.FPS) #Refresh rate
+        clock.tick(game.FPS) #Refresh rate
         # print(game.gameMode)
         # Goes through a list of all events happening - Event handler
         for event in pygame.event.get():
@@ -41,7 +42,6 @@ def main():
 
 if __name__ == "__main__":
     pygame.display.set_caption('HEX --- Created by Yogev Ben Ivgy')
-    # pygame.display.set_icon(pygame.image.load('images/icon.jpeg'))
+    pygame.display.set_icon(pygame.image.load('images/icon.webp'))
     main()
-
 

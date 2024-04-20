@@ -1,16 +1,23 @@
 import math
 
+import Button
+
+
 class Hexagon:
     def __init__(self, x, y, radius, color=(255, 255, 255)):
+        #Coordinats -> x and y axisses
         self.middleX = x
         self.middleY = y
+        #Visualize the hexagon
         self.color = color
         self.radius = radius
         self.points = [
             (x + radius * math.cos(math.radians(30 + 60 * i)), y + radius * math.sin(math.radians(30 + 60 * i)))
             for i in range(6)
         ]
+        #Button
         self.taken = False
+        self.button = Button.Button_hex(x,y,25)
 
     def mouseCollision(self, mouse_pos):
         #Retruns wheres the mouse is on a hexagon
