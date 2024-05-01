@@ -29,25 +29,23 @@ class Screen:
 
         self.FPS = 60 #Refresh rate
 
-        # The clock will control the number of times the screen refreshes
-        self.clock = pygame.time.Clock()
-
-        self.gameMode="menu" # 1v1 , random , smart ,  menu, none, quit
 
         self.boardSize=5 #Size of the board will be 5*5
 
-        self.menuOption="play" #used for the menu (play, quit, options)
-        self.settingSelection = "1v1"
+
 
 
         ''' Menu '''
-        self.showMenu = True
-        self.optionsPage=False
-        self.aboutPage = False
+        self.menuOption = "play"  # used for the menu (play, quit, options)
+        self.settingSelection = "1v1"  # 1v1, easy, average , hard , back
+
+        self.showMenu = True #Show the menu or not
+        self.optionsPage=False  #Show the options page or not
+        self.aboutPage = False #Show the about page or not
         self.menu_surface = pygame.Surface(self.RES, pygame.SRCALPHA)
         self.menu_surface.fill((35, 85, 75))
 
-        #Pictures for the buttons
+        #Pictures of the menu buttons
         self.play1Pic = pygame.transform.scale((pygame.image.load('images/PLAY1.png')), (200,50))
         self.play2Pic = pygame.transform.scale((pygame.image.load('images/PLAY2.png')), (200,50))
         self.quit1Pic = pygame.transform.scale((pygame.image.load('images/QUIT1.png')), (200,50))
@@ -107,10 +105,7 @@ class Screen:
             for j in range(self.boardSize):
                 self.hexagons_Shadow[i][j] = (Hexagon.Hexagon(310 + 25 * j + 25 * 2 * i, 220 + 44 * j, 25))
 
-        self.buttons = [[0 for j in range(self.boardSize)] for i in range(self.boardSize)]
-        for i in range(self.boardSize):
-            for j in range(self.boardSize):
-                self.buttons[i][j]=(Button.Button_hex(300+25*j+25*2*i,212+44*j,25))
+
 
     def draw_hexagon(self, hex,shadow,width=0):
         #Draw the given hexagon
@@ -127,12 +122,13 @@ class Screen:
 
 
     def draw_grid(self):
+        #Draw a 5x5 grid
         for i in range(self.boardSize):
             for j in range(self.boardSize):
                 self.draw_hexagon(self.hexagons[i][j],self.hexagons_Shadow[i][j])
 
     def menu(self,keys):
-        pressedKey = self.check_arrow_keys(keys)
+        pressedKey = self.check_keys(keys)
         self.WIN.blit((self.menu_surface), (0, 0))
         if not self.optionsPage and not self.aboutPage:
             self.showMessage("Welcome to HEX" , self.RES[0] / 2, self.RES[1] / 10 * 8 + 5, BLACK, 50)
@@ -180,12 +176,12 @@ class Screen:
         elif self.optionsPage:
             return self.gameOptions(pressedKey)
         elif self.aboutPage:
-            self.aboutText(pressedKey,self.startingX,self.startingY)
+            self.aboutText(pressedKey,self.startingX)
 
             # return self.menuOption
         return "menu"
 
-    def aboutText(self, pressedKey,x,y):
+    def aboutText(self, pressedKey,x):
         if pressedKey == "down":
             if  -100<=self.startingY<= 80:
                 self.startingY-=20
@@ -355,12 +351,10 @@ class Screen:
         self.hard(350,400)
         self.back(350,500)
 
-        # print(self.settingSelection, self.gameMode)
 
 
 
-    def check_arrow_keys(self,keys):
-
+    def check_keys(self,keys):
         # Check for up arrow key
         if keys[pygame.K_UP] and not self.up_arrow_pressed:
             self.up_arrow_pressed = True
@@ -453,4 +447,3 @@ class Screen:
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.WIN.blit(text_surface, text_rect)
-
