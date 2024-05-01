@@ -47,19 +47,10 @@ class Game(Screen):
 
         # reinforcment learning
 
-        self.diction_1to5 = {}
         self.diction_1to5JSON = Dictionary.Dict("dictionaries/diction1-5.json")
-
-        self.diction_6to10 = {}
         self.diction_6to10JSON = Dictionary.Dict("dictionaries/diction6-10.json")
-
-        self.diction_11to15 = {}
         self.diction_11to15JSON = Dictionary.Dict("dictionaries/diction11-15.json")
-
-        self.diction_16to20 = {}
         self.diction_16to20JSON = Dictionary.Dict("dictionaries/diction16-20.json")
-
-        self.diction_21to25 = {}
         self.diction_21to25JSON = Dictionary.Dict("dictionaries/diction21-25.json")
 
         self.diction_1to5 = self.diction_1to5JSON.dic
@@ -67,6 +58,7 @@ class Game(Screen):
         self.diction_11to15 = self.diction_11to15JSON.dic
         self.diction_16to20 = self.diction_16to20JSON.dic
         self.diction_21to25 = self.diction_21to25JSON.dic
+
         self.moves = 1
 
 
@@ -173,7 +165,7 @@ class Game(Screen):
     def pressHex(self):
         for i in range(self.boardSize):
             for j in range(self.boardSize):
-                if self.buttons[i][j].buttonPress():
+                if self.hexagons[i][j].button.buttonPress():
                     if not self.hexagons[i][j].taken:
 
                         if self.blueTurn:
@@ -213,15 +205,11 @@ class Game(Screen):
             self.win=True
             self.blueWin=True
             self.blueWins+=1
-            return True
-        return False
 
     def winnerRed(self):
         if self.ds_red.find(self.top_node) == self.ds_red.find(self.bottom_node):
             self.win=True
             self.redWins+=1
-            return True
-        return False
 
 
     def displayWins(self):
@@ -242,7 +230,6 @@ class Game(Screen):
         self.hexagons[(index[0])][index[1]].color = BLUE
         self.board[index[1]][index[0]] = 1
         self.blueTurn = False
-
         self.hexagons[index[0]][index[1]].taken = True
         self.checkWinner(index[1],index[0],"blue")
 
