@@ -29,6 +29,8 @@ class Screen:
 
         self.FPS = 60 #Refresh rate
 
+        # The clock will control the number of times the screen refreshes
+        self.clock = pygame.time.Clock()
 
         self.gameMode="menu" # 1v1 , random , smart ,  menu, none, quit
 
@@ -105,7 +107,10 @@ class Screen:
             for j in range(self.boardSize):
                 self.hexagons_Shadow[i][j] = (Hexagon.Hexagon(310 + 25 * j + 25 * 2 * i, 220 + 44 * j, 25))
 
-
+        self.buttons = [[0 for j in range(self.boardSize)] for i in range(self.boardSize)]
+        for i in range(self.boardSize):
+            for j in range(self.boardSize):
+                self.buttons[i][j]=(Button.Button_hex(300+25*j+25*2*i,212+44*j,25))
 
     def draw_hexagon(self, hex,shadow,width=0):
         #Draw the given hexagon
@@ -448,3 +453,4 @@ class Screen:
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.WIN.blit(text_surface, text_rect)
+

@@ -8,11 +8,10 @@ def main():
 
     run = True #This is for the game loop
 
-    clock = pygame.time.Clock()
 
     while run:
 
-        clock.tick(game.FPS) #Refresh rate
+        game.clock.tick(game.FPS) #Refresh rate
         # print(game.gameMode)
         # Goes through a list of all events happening - Event handler
         for event in pygame.event.get():
@@ -26,12 +25,6 @@ def main():
                     if game.win:
                         game.newGame()
 
-                #Pause the game
-                # if event.key == pygame.K_ESCAPE:
-
-
-
-
         if game.gameManager()=="quit":
             run=False
 
@@ -44,4 +37,5 @@ if __name__ == "__main__":
     pygame.display.set_caption('HEX --- Created by Yogev Ben Ivgy')
     pygame.display.set_icon(pygame.image.load('images/icon.webp'))
     main()
+
 

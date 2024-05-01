@@ -2,8 +2,8 @@ import json
 class Dict():
 
     def __init__(self, path):
-        self.path = path #String of the path from the content root
-        self.dic = json.load(open(self.path)) #A python dictionary
+        self.path = path
+        self.dic = json.load(open(self.path))
 
 
     def getDic(self):
@@ -15,6 +15,6 @@ class Dict():
         return json_dict
 
     def dumpDic(self,dictionary):
-        #Export the given dictionary as JSON file (overwrite)
+        #Export the given dictionary (overwrite)
         with open(self.path, 'w')as json_file:
             json.dump(dictionary, json_file)

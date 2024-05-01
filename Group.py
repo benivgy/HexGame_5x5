@@ -36,4 +36,3 @@ class DisjointSet:
             # Attach smaller set (root_y) to the larger set (root_x)
             self.parent[root_y] = root_x
             self.size[root_x] += self.size[root_y]
-

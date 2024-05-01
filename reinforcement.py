@@ -1,13 +1,18 @@
+import copy
 import random
 import Group
 import numpy as np
 import Dictionary
+# from tensorflow.keras.models import Sequential
+# from tensorflow.keras.layers import Dense, Flatten
+# from tensorflow.keras.optimizers import Adam
 class Learning:
     def __init__(self,boardSize):
         self.board = np.zeros((boardSize, boardSize))
         self.gama = 0.9
         self.epsilon = 0.0001
         self.matchList = []
+        self.dicList=[]
         self.blueTurn = True
 
 
@@ -32,10 +37,19 @@ class Learning:
         self.diction_21to25JSON = Dictionary.Dict("dictionaries/diction21-25.json")
 
         self.diction_1to5 = self.diction_1to5JSON.dic
+        self.dicList.append(self.diction_1to5)
+
         self.diction_6to10 = self.diction_6to10JSON.dic
+        self.dicList.append(self.diction_6to10)
+
         self.diction_11to15 = self.diction_11to15JSON.dic
+        self.dicList.append(self.diction_11to15)
+
         self.diction_16to20 = self.diction_16to20JSON.dic
+        self.dicList.append(self.diction_16to20)
+
         self.diction_21to25 = self.diction_21to25JSON.dic
+        self.dicList.append(self.diction_21to25)
 
         self.turnsLeft = boardSize*boardSize
         self.moves=1
@@ -159,7 +173,7 @@ class Learning:
                 self.randomBlue(self.randomIndex())
             else:
                 smartORrandom = random.random()
-                if smartORrandom <=0.3:
+                if smartORrandom <=-10:
                     self.randomRed(self.randomIndex())
                 else:
                     i, j = self.smartMove()
@@ -301,7 +315,7 @@ class Learning:
 
                             self.board[i][j] = 0
                 if row==-1 and col==-1:
-                    print("random")
+                    # print("random")
                     row, col = self.randomIndex()
 
 
@@ -413,10 +427,23 @@ def erase(lr):
     lr.diction_16to20JSON.dumpDic(lr.diction_16to20)
     lr.diction_21to25JSON.dumpDic(lr.diction_21to25)
 
+def convertTOcsv(lr):
+    with open('nl_data.csv', 'w') as output_file:
+        for dic in lr.dicList:
+            for key in dic:
+                k = [*key]
+                str1 = ''
+                for x in k:
+                    str1 = str1 + x + ','
+                output_file.write("%s,%s,%s\n" % (str1[:-1],dic[key][0],dic[key][1]))
+    output_file.close()
+
+
 if __name__=="__main__":
     print("Loading dictionaries")
     lr = Learning(5)
-    while True:
+    run=True
+    while run:
         print("Welcome to the reinforcement learning section of the project")
         print("Chose an option:")
         print("1 - play 3 million games")
@@ -426,9 +453,11 @@ if __name__=="__main__":
         print("5 - 70-30")
         print("6 - check winning rate")
         print("7 - Erase dictionaries")
+        print("8 - Export to a CSV file")
+        print("-99 - EXIT")
 
         mode = input()
-        while int(mode) not in [1,2,3,4,5,6,7]:
+        while int(mode) not in [1,2,3,4,5,6,7,8,-99]:
             mode=input("Invalid input, try again")
 
         mode=int(mode)
@@ -458,3 +487,9 @@ if __name__=="__main__":
         elif mode==7:
             print("Erasing dictionaries...")
             erase(lr)
+        elif mode==8:
+            print("Creating CSV file")
+            convertTOcsv(lr)
+
+        elif mode==-99:
+            run=False

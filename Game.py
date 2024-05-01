@@ -22,8 +22,8 @@ class Game(Screen):
         self.blueWin = False  # Indicates if the blue player has won
 
         '''Winning check:'''
-        self.cells = [(i, j) for i in range(self.boardSize) for j in range(self.boardSize)]# Generates a list of all possible cell coordinates on the game board
-        # Define the virtual nodes for the disjoint sets
+        # Define board positions
+        self.cells = [(i, j) for i in range(self.boardSize) for j in range(self.boardSize)]
         self.top_node = (-1, 0)
         self.bottom_node = (self.boardSize, 0)
         self.left_node = (0, -1)
@@ -67,7 +67,6 @@ class Game(Screen):
         self.diction_11to15 = self.diction_11to15JSON.dic
         self.diction_16to20 = self.diction_16to20JSON.dic
         self.diction_21to25 = self.diction_21to25JSON.dic
-
         self.moves = 1
 
 
@@ -97,7 +96,10 @@ class Game(Screen):
             for j in range(self.boardSize):
                 self.hexagons[i][j] = (Hexagon.Hexagon(300 + 25 * j + 25 * 2 * i, 212 + 44 * j, 25))
 
-
+        self.buttons = [[0 for j in range(self.boardSize)] for i in range(self.boardSize)]
+        for i in range(self.boardSize):
+            for j in range(self.boardSize):
+                self.buttons[i][j] = (Button.Button_hex(300 + 25 * j + 25 * 2 * i, 212 + 44 * j, 25))
 
         self.moves=1
 
@@ -171,7 +173,7 @@ class Game(Screen):
     def pressHex(self):
         for i in range(self.boardSize):
             for j in range(self.boardSize):
-                if self.hexagons[i][j].button.buttonPress():
+                if self.buttons[i][j].buttonPress():
                     if not self.hexagons[i][j].taken:
 
                         if self.blueTurn:
