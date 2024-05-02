@@ -461,7 +461,6 @@ if __name__=="__main__":
             mode=input("Invalid input, try again")
 
         mode=int(mode)
-        print("*** Wait a few moments for the dictionaries to load")
 
         if mode==1:
             print("playing 3 million games...")

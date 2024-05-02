@@ -32,8 +32,7 @@ class Screen:
 
         self.boardSize=5 #Size of the board will be 5*5
 
-
-
+        self.boardEdges  = [(255, 185), (525, 185), (380, 420), (645, 420)]
 
         ''' Menu '''
         self.menuOption = "play"  # used for the menu (play, quit, options)
@@ -126,6 +125,12 @@ class Screen:
         for i in range(self.boardSize):
             for j in range(self.boardSize):
                 self.draw_hexagon(self.hexagons[i][j],self.hexagons_Shadow[i][j])
+
+        lineW=5
+        pygame.draw.line(self.WIN, RED, self.boardEdges[0], self.boardEdges[1],width=lineW)
+        pygame.draw.line(self.WIN, RED, self.boardEdges[2], self.boardEdges[3],width=lineW)
+        pygame.draw.line(self.WIN, BLUE, self.boardEdges[0], self.boardEdges[2],width=lineW)
+        pygame.draw.line(self.WIN, BLUE, self.boardEdges[1], self.boardEdges[3],width=lineW)
 
     def menu(self,keys):
         pressedKey = self.check_keys(keys)
@@ -426,11 +431,6 @@ class Screen:
             self.WIN.blit(self.about2Pic,(x, y))
         else:
             self.WIN.blit(self.about1Pic, (x, y))
-
-
-
-
-
 
 
     ''' Display things on the screen'''

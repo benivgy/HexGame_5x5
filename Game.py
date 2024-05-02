@@ -88,11 +88,6 @@ class Game(Screen):
             for j in range(self.boardSize):
                 self.hexagons[i][j] = (Hexagon.Hexagon(300 + 25 * j + 25 * 2 * i, 212 + 44 * j, 25))
 
-        self.buttons = [[0 for j in range(self.boardSize)] for i in range(self.boardSize)]
-        for i in range(self.boardSize):
-            for j in range(self.boardSize):
-                self.buttons[i][j] = (Button.Button_hex(300 + 25 * j + 25 * 2 * i, 212 + 44 * j, 25))
-
         self.moves=1
 
     def gameManager(self):
