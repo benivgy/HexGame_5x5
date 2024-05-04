@@ -1,11 +1,8 @@
-import copy
 import random
 import Group
 import numpy as np
 import Dictionary
-# from tensorflow.keras.models import Sequential
-# from tensorflow.keras.layers import Dense, Flatten
-# from tensorflow.keras.optimizers import Adam
+
 class Learning:
     def __init__(self,boardSize):
         self.board = np.zeros((boardSize, boardSize))
@@ -51,7 +48,6 @@ class Learning:
         self.diction_21to25 = self.diction_21to25JSON.dic
         self.dicList.append(self.diction_21to25)
 
-        self.turnsLeft = boardSize*boardSize
         self.moves=1
         self.boardSize=boardSize
 
@@ -78,7 +74,6 @@ class Learning:
         self.matchList = []
         self.blueTurn = True
 
-        self.turnsLeft = self.boardSize * self.boardSize
         self.moves=1
 
         self.win = False
@@ -117,7 +112,6 @@ class Learning:
         self.board[i][j] = 1
         self.blueTurn = False
         self.checkWinner(i, j, "blue")
-        self.turnsLeft -= 1
         self.moves+=1
 
 
@@ -126,7 +120,6 @@ class Learning:
         self.board[i][j] = 2
         self.blueTurn = True
         self.checkWinner(i, j, "red")
-        self.turnsLeft -= 1
         self.moves+=1
     def checkWinner(self, i, j, player):
         code = 1 if player == 'blue' else 2
