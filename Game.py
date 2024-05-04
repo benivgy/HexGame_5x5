@@ -148,10 +148,14 @@ class Game(Screen):
                 if self.blueWin:
                     self.showMessage("Blue wins", 140, 500, BLUE)
                     self.showMessage("Blue wins", 140, 503, BLACK)
+                    self.showMessage("Blue wins - press SPACE to play again", 450, 300, BLACK)
+                    self.showMessage("Blue wins - press SPACE to play again", 450, 303, (230,230,255))
 
                 else:
                     self.showMessage("Red wins", 140, 500, RED)
                     self.showMessage("Red wins", 140, 503,BLACK)
+                    self.showMessage("Red wins - press SPACE to play again", 450, 300, BLACK)
+                    self.showMessage("Red wins - press SPACE to play again", 450, 303, (255,230,230))
 
             self.displayWins()
 
