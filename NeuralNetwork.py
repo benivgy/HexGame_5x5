@@ -1,17 +1,15 @@
-import numpy as np
 from tensorflow.keras import layers
 from tensorflow import keras
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.utils import plot_model
-from keras import backend as K
 import pandas as pd
-
+import tensorflow as tf  # Import TensorFlow module
 
 
 #clean the csv file:
 def clean():
     #Removing the last column
+
     print("reading")
     df=pd.read_csv('nl_data.csv')
     print("finished")
@@ -20,7 +18,9 @@ def clean():
     df.to_csv('nl_data_cleaned.csv', index=False) #no index column
 
 def ann():
+    print("loading")
     df = pd.read_csv('mini.csv')
+    print("loaded")
     X = df.drop(df.columns[25], axis=1).to_numpy()
     y = df.iloc[:, 25].to_numpy()
 
@@ -44,38 +44,30 @@ def ann():
     )
     model.summary()
 
-    # plot_model(model, 'model.png', show_shapes=True)
-    adam = keras.optimizers.Adam(learning_rate=0.001)
-    model.compile(loss="mean_squared_error", optimizer="adam", metrics=keras.metrics.mean_squared_error)
-    history = model.fit(X_train, y_train, batch_size=2048, epochs=50, validation_split = .2)
+    adam = keras.optimizers.Adam(learning_rate=0.0001)
+    model.compile(loss="mean_squared_error", optimizer=adam)
+
+    history = model.fit(
+        x=X_train,
+        y=y_train,
+        validation_data=(X_test, y_test),  # Specify validation data here
+        epochs=15,  # adjust epochs as needed
+        shuffle=True
+    )
 
     score = model.evaluate(X_test, y_test, verbose=0)
-    print("test loss: ", score[0])
-    print("test accuracy: ", score[1])
+    print("test loss: ", score)
 
-    plt.title('learning curves')
-    plt.xlabel('epoch')
-    plt.ylabel('MSE accuracy')
-    plt.plot(history.history['mean_squared_error'])  # Orange
-    plt.plot(history.history['val_mean_squared_error'])  # Blue
+    plt.title('Learning Curves')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
     plt.legend()
+    plt.show()
 
-    model.predict([[1,2,0,0,2,0,2,0,0,0,0,1,0,0,0,0,1,2,0,0,1,0,0,1,0]])
-
+    model.save('my_model.h5')
 
 
 if __name__=="__main__":
     ann()
-
-
-
-
-# class NeuralNetwork:
-#     def __init__(self):
-#         self.df=pd.read_csv('nl_data.csv')
-#         column_to_delete = self.df.columns[25]
-#         self.df.drop(column_to_delete, axis=1, inplace=True)
-#
-
-
-
