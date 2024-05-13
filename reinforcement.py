@@ -1,7 +1,9 @@
+import copy
 import random
 import Group
 import numpy as np
 import Dictionary
+from tensorflow import keras
 
 class Learning:
     def __init__(self,boardSize):
@@ -48,6 +50,10 @@ class Learning:
         self.diction_21to25 = self.diction_21to25JSON.dic
         self.dicList.append(self.diction_21to25)
 
+        self.webModel = keras.models.load_model('my_model.h5')
+
+
+        self.turnsLeft = boardSize*boardSize
         self.moves=1
         self.boardSize=boardSize
 
@@ -74,6 +80,7 @@ class Learning:
         self.matchList = []
         self.blueTurn = True
 
+        self.turnsLeft = self.boardSize * self.boardSize
         self.moves=1
 
         self.win = False
@@ -112,6 +119,7 @@ class Learning:
         self.board[i][j] = 1
         self.blueTurn = False
         self.checkWinner(i, j, "blue")
+        self.turnsLeft -= 1
         self.moves+=1
 
 
@@ -120,6 +128,7 @@ class Learning:
         self.board[i][j] = 2
         self.blueTurn = True
         self.checkWinner(i, j, "red")
+        self.turnsLeft -= 1
         self.moves+=1
     def checkWinner(self, i, j, player):
         code = 1 if player == 'blue' else 2
@@ -217,43 +226,33 @@ class Learning:
         for i in range(len(reversedLst)):
             if 1<=len(reversedLst)-i<=5:
                 if reversedLst[i] not in self.diction_1to5:
-                    # if not -0.2<=(pow(self.gama,i)*reward)<=0.2:
                     self.diction_1to5[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_1to5[reversedLst[i]][0]*self.diction_1to5[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_1to5[reversedLst[i]][1]+1)
-#                     if newMark>=0.2 or newMark<=-0.2:
                     self.diction_1to5[reversedLst[i]]=(newMark,self.diction_1to5[reversedLst[i]][1]+1)
             elif 6<=len(reversedLst)-i<=10:
                 if reversedLst[i] not in self.diction_6to10:
-#                     if not -0.2<=(pow(self.gama,i)*reward)<=0.2:
                     self.diction_6to10[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_6to10[reversedLst[i]][0]*self.diction_6to10[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_6to10[reversedLst[i]][1]+1)
-#                     if newMark>=0.2 or newMark<=-0.2:
                     self.diction_6to10[reversedLst[i]]=(newMark,self.diction_6to10[reversedLst[i]][1]+1)
             elif 11<=len(reversedLst)-i<=15:
                 if reversedLst[i] not in self.diction_11to15:
-#                     if not -0.2<=(pow(self.gama,i)*reward)<=0.2:
                     self.diction_11to15[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_11to15[reversedLst[i]][0]*self.diction_11to15[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_11to15[reversedLst[i]][1]+1)
-#                     if newMark>=0.2 or newMark<=-0.2:
                     self.diction_11to15[reversedLst[i]]=(newMark,self.diction_11to15[reversedLst[i]][1]+1)
             elif 16<=len(reversedLst)-i<=20:
                 if reversedLst[i] not in self.diction_16to20:
-#                     if not -0.2<=(pow(self.gama,i)*reward)<=0.2:
                     self.diction_16to20[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_16to20[reversedLst[i]][0]*self.diction_16to20[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_16to20[reversedLst[i]][1]+1)
-#                     if newMark>=0.2 or newMark<=-0.2:
                     self.diction_16to20[reversedLst[i]]=(newMark,self.diction_16to20[reversedLst[i]][1]+1)
             else:
                 if reversedLst[i] not in self.diction_21to25:
-#                     if not -0.2<=(pow(self.gama,i)*reward)<=0.2:
                     self.diction_21to25[reversedLst[i]]=(pow(self.gama,i)*reward,1)
                 else:
                     newMark = (self.diction_21to25[reversedLst[i]][0]*self.diction_21to25[reversedLst[i]][1]+pow(self.gama,i)*reward)/(self.diction_21to25[reversedLst[i]][1]+1)
-#                     if newMark>=0.2 or newMark<=-0.2:
                     self.diction_21to25[reversedLst[i]]=(newMark,self.diction_21to25[reversedLst[i]][1]+1)
 
     def smartMove(self):
@@ -316,6 +315,35 @@ class Learning:
                 self.blueTurn = True
 
             return (row,col)
+    def getWebGrade(self):
+        data_array = np.array(list(map(int, self.hash())))
+        return self.webModel.predict(data_array.reshape(1, -1))[0][0]
+    def smartMove_web(self):
+        if not self.blueTurn:
+            maxGrade = -1
+            for i in range(self.boardSize):
+                for j in range(self.boardSize):
+                    if  self.board[i][j] == 0:
+                        self.board[i][j] = 2
+                        grade=self.getWebGrade()
+                        if grade>maxGrade:
+                            maxGrade=grade
+                            row=i
+                            col=j
+                        self.board[i][j]=0
+            self.board[row][col] = 2
+            self.blueTurn = True
+            self.checkWinner(row, col, "red")
+            self.moves += 1
+    def randomVSnetwork(self):
+        while not self.win:
+            if self.blueTurn:
+               self.randomBlue(self.randomIndex())
+            else:
+               self.smartMove_web()
+
+        return self.winner
+
 
 def terminalGame(lr):
     for i in range(1):
@@ -323,6 +351,23 @@ def terminalGame(lr):
         print(winner)
         lr.newGame()
 
+
+def networkGames(lr,games):
+    redWins = 0
+    blueWins = 0
+    games = int(games)
+    for i in range(games):
+        winner=lr.randomVSnetwork()
+        if winner == "red":
+            redWins += 1
+        else:
+            blueWins += 1
+        if i % 10000 == 0:
+            print(i)
+        lr.newGame()
+
+    print(
+        f"Blue wins: {blueWins}-->{blueWins / (blueWins + redWins) * 100}%\nRed wins: {redWins} -->{redWins / (blueWins + redWins) * 100}%")
 
 
 def cleanDic(lr):
@@ -428,7 +473,7 @@ def convertTOcsv(lr):
                 str1 = ''
                 for x in k:
                     str1 = str1 + x + ','
-                output_file.write("%s,%s,%s\n" % (str1[:-1],dic[key][0],dic[key][1]))
+                output_file.write("%s,%s\n" % (str1[:-1],dic[key][0]))
     output_file.close()
 
 
@@ -447,10 +492,12 @@ if __name__=="__main__":
         print("6 - check winning rate")
         print("7 - Erase dictionaries")
         print("8 - Export to a CSV file")
+        print("9 - Neural Network winning rate")
+
         print("-99 - EXIT")
 
         mode = input()
-        while int(mode) not in [1,2,3,4,5,6,7,8,-99]:
+        while int(mode) not in [1,2,3,4,5,6,7,8,9,-99]:
             mode=input("Invalid input, try again")
 
         mode=int(mode)
@@ -482,6 +529,9 @@ if __name__=="__main__":
         elif mode==8:
             print("Creating CSV file")
             convertTOcsv(lr)
+        elif mode==9:
+            games_to_play = input("Enter number of games: ")
+            networkGames(lr,games_to_play)
 
         elif mode==-99:
             run=False

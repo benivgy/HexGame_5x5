@@ -14,7 +14,7 @@ class Hexagon:
         self.taken = False
 
     def mouseCollision(self, mouse_pos):
-        #Retruns wheres the mouse is on a hexagon
+        #Returns where's the mouse is on a hexagon
         # Mouse position is a tuple (mouse_x, mouse_y)
         mouse_x, mouse_y = mouse_pos
 
@@ -28,8 +28,8 @@ class Hexagon:
             j = 5
             for i in range(6):
                 if (
-                    (self.points[i][1] < mouse_y and self.points[j][1] >= mouse_y) or
-                    (self.points[j][1] < mouse_y and self.points[i][1] >= mouse_y)
+                        (self.points[i][1] < mouse_y <= self.points[j][1]) or
+                        (self.points[j][1] < mouse_y <= self.points[i][1])
                 ) and (
                     self.points[i][0] + (mouse_y - self.points[i][1]) / (self.points[j][1] - self.points[i][1]) * (self.points[j][0] - self.points[i][0]) < mouse_x
                 ):

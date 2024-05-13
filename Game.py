@@ -1,6 +1,5 @@
 import pygame
-
-import Button
+from tensorflow import keras
 from Screen import Screen
 import numpy as np
 import random
@@ -59,6 +58,8 @@ class Game(Screen):
         self.diction_16to20 = self.diction_16to20JSON.dic
         self.diction_21to25 = self.diction_21to25JSON.dic
 
+        self.webModel = keras.models.load_model('my_model.h5')
+
         self.moves = 1
 
 
@@ -97,13 +98,13 @@ class Game(Screen):
             if self.gameMode=="quit":
                 self.showMenu=False
                 return "quit"
-            elif self.gameMode in ["1v1","random","dictionary"]:
+            elif self.gameMode in ["1v1","random","dictionary","web"]:
                 self.showMenu=False
         else:
             self.draw() #Create the game enviorment
                 #Random game
             if self.gameMode=="random":
-                self.showMessage("Easy mode", 140, 550, (0, 0, 0), 50)
+                self.showMessage("Easy mode", 450, 550, (0, 0, 0), 50)
                 if not self.win:
                     if self.blueTurn:
                         self.showMessage("Blue turn", 140, 500, BLUE)
@@ -118,42 +119,52 @@ class Game(Screen):
                 #Regular game --> 1v1
             #Display info on the screen
             if self.gameMode == "1v1":
-                self.showMessage("1v1 mode", 140, 550, (0, 0, 0), 50)
+                self.showMessage("1v1 mode", 450, 550, (0, 0, 0), 50)
                 if not self.win:
                     self.pressHex()
                     if self.blueTurn:
-                        self.showMessage("Blue turn", 140, 500, BLUE)
-                        self.showMessage("Blue turn", 140, 503, BLACK)
+                        self.showMessage("Blue turn", 450, 500, BLUE)
+                        self.showMessage("Blue turn", 450, 503, BLACK)
 
                     if not self.blueTurn:
-                        self.showMessage("Red turn", 140, 500, RED)
-                        self.showMessage("Red turn", 140, 503, BLACK)
+                        self.showMessage("Red turn", 450, 500, RED)
+                        self.showMessage("Red turn", 450, 503, BLACK)
 
 
             if self.gameMode == "dictionary":
-                self.showMessage("Average mode", 140, 550, (0, 0, 0), 50)
+                self.showMessage("Average mode", 450, 550, (0, 0, 0), 50)
                 if not self.win:
                     if self.blueTurn:
-                        self.showMessage("Blue turn", 140, 500, BLUE)
-                        self.showMessage("Blue turn", 140, 503, BLACK)
+                        self.showMessage("Blue turn", 450, 500, BLUE)
+                        self.showMessage("Blue turn", 450, 503, BLACK)
                         self.pressHex()
 
-                        if not self.blueTurn and not self.win:
-                            self.smartMove()
+                    if not self.blueTurn and not self.win:
+                        self.smartMove()
+            if self.gameMode == "web":
+                self.showMessage("Hard mode", 450, 550, (0, 0, 0), 50)
+                if not self.win:
+                    if self.blueTurn:
+                        self.showMessage("Blue turn", 450, 500, BLUE)
+                        self.showMessage("Blue turn", 450, 503, BLACK)
+                        self.pressHex()
+
+                    if not self.blueTurn and not self.win:
+                        self.smartMove_web()
 
 
             if keys[pygame.K_ESCAPE]:
                 self.showMenu=True
             if self.win:
                 if self.blueWin:
-                    self.showMessage("Blue wins", 140, 500, BLUE)
-                    self.showMessage("Blue wins", 140, 503, BLACK)
+                    self.showMessage("Blue wins", 450, 500, BLUE)
+                    self.showMessage("Blue wins", 450, 503, BLACK)
                     self.showMessage("Blue wins - press SPACE to play again", 450, 300, BLACK)
                     self.showMessage("Blue wins - press SPACE to play again", 450, 303, (230,230,255))
 
                 else:
-                    self.showMessage("Red wins", 140, 500, RED)
-                    self.showMessage("Red wins", 140, 503,BLACK)
+                    self.showMessage("Red wins", 450, 500, RED)
+                    self.showMessage("Red wins", 450, 503,BLACK)
                     self.showMessage("Red wins - press SPACE to play again", 450, 300, BLACK)
                     self.showMessage("Red wins - press SPACE to play again", 450, 303, (255,230,230))
 
@@ -240,6 +251,28 @@ class Game(Screen):
         self.checkWinner(index[1],index[0],"red")
         self.moves+=1
 
+    def getWebGrade(self):
+        data_array = np.array(list(map(int, self.hash())))
+        return self.webModel.predict(data_array.reshape(1, -1))[0][0]
+    def smartMove_web(self):
+        if not self.blueTurn:
+            maxGrade = -1
+            for i in range(self.boardSize):
+                for j in range(self.boardSize):
+                    if not self.hexagons[j][i].taken:
+                        self.board[i][j] = 2
+                        grade=self.getWebGrade()
+                        if grade>maxGrade:
+                            maxGrade=grade
+                            row=i
+                            col=j
+                        self.board[i][j]=0
+            self.board[row][col] = 2
+            self.hexagons[col][row].color = RED
+            self.hexagons[col][row].taken = True
+            self.blueTurn = True
+            self.checkWinner(row, col, "red")
+            self.moves += 1
 
 
     def smartMove_index(self):
@@ -300,9 +333,6 @@ class Game(Screen):
             if row == -1 and col == -1:
                 print("random")
                 return "random"
-
-            self.board[row][col] = 2
-            self.blueTurn = True
 
         return (row, col)
 

@@ -7,6 +7,17 @@ import numpy as np
 import tensorflow as tf  # Import TensorFlow module
 
 
+#clean the csv file:
+def clean():
+    #Removing the last column
+
+    print("reading")
+    df=pd.read_csv('nl_data.csv')
+    print("finished")
+    column_to_delete = df.columns[26]
+    df=df.drop(column_to_delete, axis=1)
+    df.to_csv('nl_data_cleaned.csv', index=False) #no index column
+
 def ann():
     print("loading")
     df = pd.read_csv('nl_data_cleaned.csv')
