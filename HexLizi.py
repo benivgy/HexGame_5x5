@@ -79,9 +79,8 @@ class NeuralNetwork:
 
         model.save('liziFiles/lizi_model.h5')
 
-    def grade(self,boardTOpredict):  # Returns the grade from the neural network
+    def grade(self,boardTOpredict,model):  # Returns the grade from the neural network
         data_array = np.array(list(map(int, boardTOpredict.split(','))))
-        model = keras.models.load_model('liziFiles/lizi_model.h5')
         return model.predict(data_array.reshape(1, -1))[0][0]
 
 
@@ -91,7 +90,8 @@ def main():
     print(nn.dicList)
     nn.convertTOcsv()
     nn.ann()
-    print(nn.grade('2,1,2,1,0,1,2,2,2,0,2,1,1,1,1,1,2,0,2,2,2,0,1,1,1'))
+    model = keras.models.load_model('liziFiles/lizi_model.h5')
+    print(nn.grade('2,1,2,1,0,1,2,2,2,0,2,1,1,1,1,1,2,0,2,2,2,0,1,1,1'),model)
 
 
 if __name__ == "__main__":
